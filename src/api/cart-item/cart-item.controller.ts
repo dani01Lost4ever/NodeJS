@@ -7,6 +7,7 @@ import { errorHandler } from '../../errors/generic';
 import { plainToClass } from 'class-transformer';
 import { AddCartItemDTO } from './cart-item.dto';
 import { validate } from 'class-validator';
+import { validationErrorHandler } from '../../errors/validationError';
 
 export const list = async (req: Request, res: Response, next: NextFunction) => {
   const list = await cartItemService.find();
@@ -23,8 +24,9 @@ export const add = async (
     const data= plainToClass(AddCartItemDTO, req.body);
     const errors=await validate(data);
     if(errors.length > 0) {
-      console.log(errors);
-      next(errors);
+      //console.log(errors);
+      validationErrorHandler(errors, req, res, next);
+      //next(errors);
       return;
     }
     const { productId, quantity } = data; 

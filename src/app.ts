@@ -5,6 +5,7 @@ import apiRouter from './api/routes';
 import bodyParser from 'body-parser';
 import { notFoundHandler } from './errors/not-found';
 import { errorHandler } from './errors/generic';
+import { validationErrorHandler } from './errors/validationError';
 
 const app = express();
 
@@ -16,5 +17,5 @@ app.use('/api', apiRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
-
+app.use(validationErrorHandler)
 export default app;
