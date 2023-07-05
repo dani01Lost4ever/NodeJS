@@ -1,8 +1,10 @@
-import express, { Request, Response, NextFunction} from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import apiRouter from './api/routes';
 import bodyParser from 'body-parser';
+import { notFoundHandler } from './errors/not-found';
+import { errorHandler } from './errors/generic';
 
 const app = express();
 
@@ -12,9 +14,7 @@ app.use(bodyParser.json());
 
 app.use('/api', apiRouter);
 
-app.get('/', (req: Request, res: Response, next: NextFunction) => {
-  res.status(200);
-  res.send('Hello World');
-});
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 export default app;

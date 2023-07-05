@@ -3,6 +3,10 @@ import cartItemService from './cart-item.service';
 import productService from '../product/product.service';
 import { CartItem } from './cart-item.entity';
 import { TypedRequest } from '../../utils/typed-request.interface';
+import { errorHandler } from '../../errors/generic';
+import { plainToClass } from 'class-transformer';
+import { AddCartItemDTO } from './cart-item.dto';
+import { validate } from 'class-validator';
 
 export const list = async (req: Request, res: Response, next: NextFunction) => {
   const list = await cartItemService.find();
@@ -14,15 +18,24 @@ export const add = async (
   res: Response,
   next: NextFunction) => {
     
-  const { productId, quantity } = req.body;
+
   try {
+    const data= plainToClass(AddCartItemDTO, req.body);
+    const errors=await validate(data);
+    if(errors.length > 0) {
+      console.log(errors);
+      next(errors);
+      return;
+    }
+    const { productId, quantity } = data; 
     const product = await productService.getById(productId);
     if (!product) {
       res.status(404);
       res.send();
-      return;
+      return errorHandler(404, req, res, next);
+
     }
-    
+
     const newItem: CartItem = {
       product: productId,
       quantity
