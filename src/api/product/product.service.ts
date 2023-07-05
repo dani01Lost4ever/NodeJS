@@ -1,23 +1,16 @@
-import PRODUCTS from "../../products.json";
-import Generation, { generateProductsAndWriteToFile } from "../../example-data";
+import { Product } from "./product.entity";
+import { Product as ProductModel } from './product.model';
+
 export class ProductService {
 
-  async generate(id: number) {
-     Generation(id);
-    return PRODUCTS;
+  async find(): Promise<Product[]> {
+    const list = await ProductModel.find();
+    return list;
   }
 
-  async generateTs(id: number) {
-    generateProductsAndWriteToFile(id);
-   return PRODUCTS;
- }
-
-  async find() {
-    return PRODUCTS;
-  }
-
-  async getById(id: string) {
-    return PRODUCTS.find(i => i.id === id) || null;
+  async getById(id: string): Promise<Product | null> {
+    const item = await ProductModel.findById(id);
+    return item;
   }
 
 }
