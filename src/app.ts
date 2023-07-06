@@ -16,6 +16,8 @@ app.use(bodyParser.json());
 app.use('/api', apiRouter);
 
 app.use(notFoundHandler);
+app.use(validationErrorHandler);
 app.use(errorHandler);
-app.use(validationErrorHandler)
+
+
 export default app;

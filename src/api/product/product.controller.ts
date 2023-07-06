@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import productService from './product.service';
 
 export const list = async (req: Request, res: Response, next: NextFunction) => {
-  const products = await productService.find();
+  const products = await productService.find(req.query);
   res.json(products);
 }
 
