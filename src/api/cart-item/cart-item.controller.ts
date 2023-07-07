@@ -39,18 +39,22 @@ export const add = async (
   }
 }
 
-export const updateQuantity = async (req: TypedRequest<{quantity: number}>, res: Response, next: NextFunction) => {
-  const id = req.params.id;
-  
-  try {
-    const newQuantity = req.body.quantity;
-
-    const updated = await cartItemService.update(id, {quantity: newQuantity});
-    res.json(updated);
-  } catch(err: any) {
-    next(err);
-  }
+export const updateQuantity = async (
+  req: TypedRequest<UpdateQuantityDTO>,
+  res: Response,
+  next: NextFunction) => {
+    const id = req.params.id;
+    
+    try {
+      const newQuantity = req.body.quantity;
+      
+      const updated = await cartItemService.update(id, {quantity: newQuantity});
+      res.json(updated);
+    } catch(err: any) {
+      next(err);
+    }
 }
+
 
 export const remove = async (req: Request, res: Response, next: NextFunction) => {
   const id = req.params.id;
