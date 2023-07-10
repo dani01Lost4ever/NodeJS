@@ -13,11 +13,11 @@ res.json(products);
 }
 
 export const get = async (req: Request, res: Response, next: NextFunction) => {
-const item = await productService.getById(req.params.id);
-if (!item) {
-throw new NotFoundError();
-}
-res.json(item);
+  const item = await productService.getById(req.params.id);
+  if (!item) {
+    throw new NotFoundError();
+  }
+  res.json(item);
 }
 
 export const gen = async (req: Request, res: Response,)=> {

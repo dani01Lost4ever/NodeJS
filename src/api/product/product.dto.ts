@@ -12,6 +12,12 @@ export class QueryProductDTO{
     @IsNumber()
     @Min(0)
     @Type(()=>Number)
-    @Validate(MinMaxPriceValidator)
     minPrice:number;
+
+    @IsOptional()
+    @IsNumber()
+    @Min(0)
+    @Type(()=>Number)
+    @Validate(MinMaxPriceValidator)
+    maxPrice:number;    
 }

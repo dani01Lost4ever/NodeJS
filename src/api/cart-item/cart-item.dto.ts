@@ -5,12 +5,12 @@ export class AddCartItemDTO{
     
     @IsInt()
     @Min(1)
-    @Max(10)
+    @Max(1000)
     quantity: number;
 }
 export class UpdateQuantityDTO {
     @IsInt()
     @Min(1)
-    @Max(10)
+    @Max(1000)
     quantity: number;
   }

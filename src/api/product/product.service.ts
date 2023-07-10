@@ -29,7 +29,7 @@ export class ProductService {
     if(query.maxPrice){
       q.netPrice['$lte']=query.maxPrice;
     }
-    const list = await ProductModel.find();
+    const list = await ProductModel.find(q);
     return list;
   }
 
