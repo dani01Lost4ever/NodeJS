@@ -23,10 +23,11 @@ export class UserService {
       user: newUser._id,
       credentials: {
         username: credentials.username,
-        password: hashedPassword,
+        hashedPassword,
       },
     });
 
     return newUser;
   }
 }
+export default new UserService();

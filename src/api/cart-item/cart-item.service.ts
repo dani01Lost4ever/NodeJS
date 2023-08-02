@@ -1,42 +1,48 @@
-import { assign } from 'lodash';
+import { assign } from "lodash";
 import { CartItem } from "./cart-item.entity";
-import { CartItem as CartItemModel } from './cart-item.model';
-import { Product } from '../product/product.entity';
-import { updateQuantity } from './cart-item.controller';
-
+import { CartItem as CartItemModel } from "./cart-item.model";
+import { NotFoundError } from "../../errors/not-found";
 
 export class CartItemService {
-  
-  async find(): Promise<CartItem[]> {
-    return CartItemModel.find().populate('product');
+  async find(userId: string): Promise<CartItem[]> {
+    return CartItemModel.find({ user: userId }).populate("product");
   }
 
-  async getById(id: string): Promise<CartItem | null> {
-    return this._getById(id);
+  async getById(id: string, userId: string): Promise<CartItem | null> {
+    return this._getById(id, userId);
   }
 
-  private async _getById(id: string) {
-    return CartItemModel.findById(id).populate('product');
+  private async _getById(id: string, userId: string) {
+    return CartItemModel.findOne({ _id: id, user: userId }).populate("product");
   }
 
-  async add(item: CartItem): Promise<CartItem> {
-    // const newItem = new CartItemModel(item);
-    // await newItem.save();
-    const existingItem = await CartItemModel.findOne({ product: item.product });
+  async add(item: CartItem, userId: string): Promise<CartItem> {
+    const existing = await CartItemModel.findOne({
+      product: item.product,
+      user: userId,
+    });
+    if (existing) {
+      return this.update(
+        existing.id,
+        { quantity: existing.quantity + item.quantity },
+        userId
+      );
+    }
 
-    if (existingItem) {
-      return this.update(existingItem.id, {quantity: existingItem.quantity+item.quantity});
-    } 
-    const newItem = await CartItemModel.create(item);
-    await newItem.populate('product');
+    const newItem = await CartItemModel.create({ ...item, user: userId });
+    await newItem.populate("product");
 
     return newItem;
   }
 
-  async update(id: string, data: Partial<CartItem>): Promise<CartItem> {
-    const item = await this._getById(id);
+  async update(
+    id: string,
+    data: Partial<CartItem>,
+    userId: string
+  ): Promise<CartItem> {
+    const item = await this._getById(id, userId);
     if (!item) {
-      throw new Error('Not Found');
+      throw new NotFoundError();
     }
     assign(item, data);
     await item.save();
@@ -44,10 +50,10 @@ export class CartItemService {
     return item;
   }
 
-  async remove(id: string): Promise<void> {
-    const item = await this._getById(id);
+  async remove(id: string, userId: string): Promise<void> {
+    const item = await this._getById(id, userId);
     if (!item) {
-      throw new Error('Not Found');
+      throw new NotFoundError();
     }
     await item.deleteOne();
   }
